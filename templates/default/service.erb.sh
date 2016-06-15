@@ -10,6 +10,7 @@
 # Description:       Controls the New Relic <%= @plugin_name %> Plugin
 ### END INIT INFO
 
+RUNAS="<%= @user %>"
 NAME="<%= @service_name %>"
 VERSION="<%= @version %>"
 DAEMON="<%= @daemon %>"
@@ -21,7 +22,7 @@ get_pid() {
 }
 
 is_running() {
-  [ -f "$PIDFILE" ] && ps `get_pid` > /dev/null 2>&1
+  [ -f "$PIDFILE" ] && ps "$(get_pid)" > /dev/null 2>&1
 }
 
 start() {
@@ -29,9 +30,10 @@ start() {
     echo "Already Started $NAME"
   else
     echo "Starting $NAME"
-    cd $DAEMONDIR
-    touch $PIDFILE ; chown <%= @user %> $PIDFILE
-    su <%= @user %> -s '/bin/bash' -c "<%= @run_command %> $DAEMON >> $DAEMONDIR/plugin_daemon.log 2>&1 & echo \$! > $PIDFILE"
+    cd "$DAEMONDIR" || exit 4
+    touch "$PIDFILE"
+    chown "$RUNAS" "$PIDFILE"
+    su "$RUNAS" -s '/bin/bash' -c "<%= @run_command %> $DAEMON >> $DAEMONDIR/plugin_daemon.log 2>&1 & echo \$! > $PIDFILE"
   fi
 }
 
@@ -47,7 +49,7 @@ status() {
 stop() {
   if is_running; then
     echo "Stopping $NAME"
-    kill `get_pid`
+    kill "$(get_pid)"
   else
     echo "$NAME is not running"
   fi
