@@ -1,7 +1,7 @@
 define :plugin_service do
   # create init.d script
   template "/etc/init.d/#{params[:name]}" do
-    source 'service.erb'
+    source 'service.erb.sh'
     variables({
       :daemon       => params[:daemon],
       :daemon_dir   => params[:daemon_dir],

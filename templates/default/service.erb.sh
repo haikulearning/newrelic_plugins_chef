@@ -10,11 +10,10 @@
 # Description:       Controls the New Relic <%= @plugin_name %> Plugin
 ### END INIT INFO
 
-DESC="New Relic <%= @plugin_name %> Plugin Daemon"
-NAME=<%= @service_name %>
-VERSION=<%= @version %>
-DAEMON=<%= @daemon %>
-DAEMONDIR=<%= @daemon_dir %>
+NAME="<%= @service_name %>"
+VERSION="<%= @version %>"
+DAEMON="<%= @daemon %>"
+DAEMONDIR="<%= @daemon_dir %>"
 PIDFILE=/var/run/$NAME.pid
 
 get_pid() {
