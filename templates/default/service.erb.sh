@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ### BEGIN INIT INFO
 # Provides:          <%= @service_name %>
@@ -18,11 +18,23 @@ DAEMONDIR="<%= @daemon_dir %>"
 PIDFILE=/var/run/$NAME.pid
 
 get_pid() {
-  cat "$PIDFILE"
+  local my_pid
+  if [ -f "$PIDFILE" ]; then
+    my_pid="$(cat "$PIDFILE")"
+    if [ -z "$my_pid" ]; then
+      echo "pidfile exists but is empty: $PIDFILE" >&2
+      return 5
+    fi
+    echo "$my_pid"
+  else
+    echo "No pidfile exists at $PIDFILE" >&2
+    return 4
+  fi
 }
 
 is_running() {
-  [ -f "$PIDFILE" ] && ps "$(get_pid)" > /dev/null 2>&1
+  get_pid > /dev/null 2>&1 &&
+    ps "$(get_pid)" > /dev/null 2>&1
 }
 
 start() {
